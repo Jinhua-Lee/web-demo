@@ -1,4 +1,5 @@
-FROM 172.17.6.117:5000/jinhua/alpine-jdk11:v1.0.0
+FROM 192.168.101.30:5000/fabric8/java-alpine-openjdk11-jre
+
 VOLUME /tmp
 
 # 复制war包到根目录
