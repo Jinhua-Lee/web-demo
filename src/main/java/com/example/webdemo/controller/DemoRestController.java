@@ -1,22 +1,22 @@
 package com.example.webdemo.controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Model和View的Controller
+ * Todo
  *
  * @author Jinhua-Lee
  * @version 1.0
- * @date 2022/12/17 19:49
+ * @date 2022/2/11 22:47
  */
-@Controller
-@RequestMapping(value = "/demo")
-public class DemoController {
+@RestController
+@RequestMapping(value = "demo-rest")
+public class DemoRestController {
 
-    @GetMapping(value = "/hello")
+    @GetMapping(value = "hello")
     public String hello() {
-        return "main";
+        return "hello";
     }
 }
