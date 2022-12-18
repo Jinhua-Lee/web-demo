@@ -1,11 +1,11 @@
 server:
   port: 8084
 
-spring:
-  mvc:
-    # 静态资源路径
-    static-path-pattern: /**
-    # 默认值为 classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
-    view:
-      prefix: classpath:static/templates/
-      suffix: .html
+#spring:
+#  mvc:
+#    # 静态资源路径
+#    static-path-pattern: /**
+#    # 默认值为 classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+#    view:
+#      prefix: classpath:static/templates/
+#      suffix: .html

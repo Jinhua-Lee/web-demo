@@ -17,6 +17,6 @@ public class DemoController {
 
     @GetMapping(value = "/hello")
     public String hello() {
-        return "main";
+        return "/templates/main.html";
     }
 }
