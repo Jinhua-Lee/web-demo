@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022/2/11 22:47
  */
 @RestController
-@RequestMapping(value = "demo")
+@RequestMapping(value = "/demo-rest")
 @Slf4j
 public class DemoRestController {
 
-    @GetMapping(value = "hello")
+    @GetMapping(value = "/hello")
     public String hello() {
         if (log.isInfoEnabled()) {
             log.info("hello request accepted.");
