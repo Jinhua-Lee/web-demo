@@ -3,8 +3,8 @@ FROM fabric8/java-alpine-openjdk11-jdk
 VOLUME /tmp
 
 # 复制war包到根目录
-ENV ARTIFACT_ID="web-demo"
-ENV VERSION="0.0.1"
+ARG ARTIFACT_ID
+ARG VERSION
 
 ADD ./target/${ARTIFACT_ID}-${VERSION}.war /${ARTIFACT_ID}.jar
 
