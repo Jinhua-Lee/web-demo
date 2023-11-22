@@ -1,5 +1,4 @@
-FROM 192.168.101.30:5000/fabric8/java-alpine-openjdk11-jre
-#FROM 172.17.6.117:5000/fabric8/java-alpine-openjdk11-jre
+FROM fabric8/java-alpine-openjdk11-jdk
 
 VOLUME /tmp
 
