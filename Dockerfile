@@ -8,7 +8,7 @@ ARG VERSION
 
 ADD ./target/${ARTIFACT_ID}-${VERSION}.war /${ARTIFACT_ID}.jar
 
-# 根目录下创建该jar文件
+# 运行根目录下该jar文件
 RUN sh -c 'touch /${ARTIFACT_ID}.jar'
 
 ENV JAVA_OPTS=""
