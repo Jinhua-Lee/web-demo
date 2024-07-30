@@ -9,3 +9,8 @@ server:
 #    view:
 #      prefix: classpath:static/templates/
 #      suffix: .html
+
+
+manual:
+  fault:
+    enable: false

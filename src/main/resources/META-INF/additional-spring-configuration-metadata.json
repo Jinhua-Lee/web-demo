@@ -1,0 +1,9 @@
+{
+    "properties": [
+        {
+            "name": "manual.fault.enable",
+            "type": "java.lang.String",
+            "description": "是否启用ApplicationRunner停止JVM调试."
+        }
+    ]
+}
