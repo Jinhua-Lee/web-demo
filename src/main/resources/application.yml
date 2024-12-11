@@ -1,7 +1,9 @@
 server:
   port: 8084
 
-#spring:
+spring:
+  main:
+    allow-bean-definition-overriding: true
 #  mvc:
 #    # 静态资源路径
 #    static-path-pattern: /**
@@ -14,3 +16,26 @@ server:
 manual:
   fault:
     enable: false
+
+
+feign:
+  custom-routing:
+    enabled: true
+    services:
+      pec-service:
+        - http://172.17.6.121:4118
+        - http://172.17.6.173:4118
+      iot-node-serviefc:
+        - http://172.17.6.121:4118
+        - http://172.17.6.173:4118
+logging:
+  level:
+    com:
+      cet:
+        futureblue:
+          fusionsenhighfacade:
+            core:
+              config: debug
+              service:
+                impl: debug
+              loadbalancer: debug
