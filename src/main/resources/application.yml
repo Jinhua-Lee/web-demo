@@ -1,6 +1,14 @@
 server:
   port: 8084
 
+eureka:
+  instance:
+    hostname: 172.17.6.121
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:1001/eureka/
+    registry-fetch-interval-seconds: 5
+
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -12,11 +20,9 @@ spring:
 #      prefix: classpath:static/templates/
 #      suffix: .html
 
-
 manual:
   fault:
     enable: false
-
 
 feign:
   custom-routing:
@@ -25,9 +31,10 @@ feign:
       pec-service:
         - http://172.17.6.121:4118
         - http://172.17.6.173:4118
-      iot-node-serviefc:
-        - http://172.17.6.121:4118
-        - http://172.17.6.173:4118
+      config-server:
+        - http://172.17.6.121:4119
+        - http://172.17.6.173:4119
+
 logging:
   level:
     com:
