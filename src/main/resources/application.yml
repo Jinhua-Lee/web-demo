@@ -7,6 +7,7 @@ eureka:
   client:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:1001/eureka/
+    register-with-eureka: false
     registry-fetch-interval-seconds: 5
 
 spring:
@@ -19,6 +20,28 @@ spring:
 #    view:
 #      prefix: classpath:static/templates/
 #      suffix: .html
+  redis:
+    host: 172.17.6.117
+    port: 6379
+    password: Cafe2babe.!
+  rabbitmq:
+    addresses: 172.17.6.117:5672
+    username: admin
+    password: Cafe2babe.!
+  datasource:
+    druid:
+      config:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://172.17.6.117:5432/PECSTAR_CONFIG_ljhtest
+        username: postgres
+        password: Cafe2babe.!
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://172.17.6.117:5432/PECSTAR_CONFIG_ljhtest
+      username: postgres
+      password: Cafe2babe.!
+
+database:
+  type: postgresql
 
 manual:
   fault:

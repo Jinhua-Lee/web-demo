@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 测试RestController
@@ -25,6 +27,8 @@ public class DemoRestController {
     @SuppressWarnings("all")
     private final List<byte[]> dataList = new ArrayList<>();
     private Integer totalMegaBytes = 0;
+
+    private final AtomicInteger threadCount = new AtomicInteger();
 
     @GetMapping(value = "/hello")
     public String hello() {
@@ -56,4 +60,18 @@ public class DemoRestController {
         log.info("memory out finished. total memory = {} mb.", totalMegaBytes);
         return totalMegaBytes;
     }
+
+    @GetMapping(value = "/thread-oom")
+    @SuppressWarnings("all")
+    public Integer threadOom() {
+        log.info("start to create thread oom. thread count = {}", threadCount.get());
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                Thread.sleep(1000000);
+            } catch (InterruptedException ignored) {
+            }
+        });
+        return threadCount.incrementAndGet();
+    }
+
 }
