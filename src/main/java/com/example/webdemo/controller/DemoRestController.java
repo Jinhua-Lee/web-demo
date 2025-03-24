@@ -64,7 +64,7 @@ public class DemoRestController {
     @SuppressWarnings("all")
     public Integer threadOom() {
         while(true) {
-            log.info("[thread oom] thread count = {}", threadCount.get());
+            log.info("[thread oom] thread count = {}", threadCount.getAndIncrement());
             new Thread(() -> {
                 try {
                     TimeUnit.SECONDS.sleep(1_000);
