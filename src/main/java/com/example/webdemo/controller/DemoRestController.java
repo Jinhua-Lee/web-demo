@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -64,14 +63,15 @@ public class DemoRestController {
     @GetMapping(value = "/thread-oom")
     @SuppressWarnings("all")
     public Integer threadOom() {
-        log.info("start to create thread oom. thread count = {}", threadCount.get());
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try {
-                Thread.sleep(1000000);
-            } catch (InterruptedException ignored) {
-            }
-        });
-        return threadCount.incrementAndGet();
+        while(true) {
+            log.info("[thread oom] thread count = {}", threadCount.get());
+            new Thread(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(1_000);
+                } catch (InterruptedException ignored) {
+                }
+            }).start();
+        }
     }
 
 }
