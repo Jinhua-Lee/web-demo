@@ -60,6 +60,20 @@ public class DemoRestController {
         return totalMegaBytes;
     }
 
+    @GetMapping(value = "/memory-alloc")
+    public Integer memoryAlloc(@RequestParam(value = "allocMegaBytes") Integer allocMegaBytes) {
+        allocMegaBytes = allocMegaBytes <= 0 ? 100 : allocMegaBytes;
+        log.info("start to memory alloc. total memory = {} mb.", allocMegaBytes);
+        try {
+            byte[] curBytes = new byte[allocMegaBytes * 1024 * 1024];
+            log.info("allocate {} bytes", curBytes.length);
+        } catch (OutOfMemoryError oom) {
+            log.error("memory alloc error.", oom);
+            throw oom;
+        }
+        return allocMegaBytes;
+    }
+
     @GetMapping(value = "/thread-oom")
     @SuppressWarnings("all")
     public Integer threadOom() {
