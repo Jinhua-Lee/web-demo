@@ -46,26 +46,3 @@ database:
 manual:
   fault:
     enable: false
-
-feign:
-  custom-routing:
-    enabled: true
-    services:
-      pec-service:
-        - http://172.17.6.121:4118
-        - http://172.17.6.173:4118
-      config-server:
-        - http://172.17.6.121:4119
-        - http://172.17.6.173:4119
-
-logging:
-  level:
-    com:
-      cet:
-        futureblue:
-          fusionsenhighfacade:
-            core:
-              config: debug
-              service:
-                impl: debug
-              loadbalancer: debug
