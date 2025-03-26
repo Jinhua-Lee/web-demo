@@ -1,15 +1,19 @@
 package com.example.webdemo.aspect;
 
 import com.example.webdemo.mangger.OomMonitor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Jinhua-Lee
  */
+@Slf4j
 @Aspect
+@Component
 public class OomMetricsCountAspect {
 
     @Pointcut("execution(public * com.example.webdemo.controller.*.*(..))")
@@ -22,6 +26,7 @@ public class OomMetricsCountAspect {
         try {
             result = joinPoint.proceed();
         } catch (OutOfMemoryError oom) {
+            log.debug("caught oom error. ", oom);
             OomMonitor.handleOom();
             throw oom;
         }
