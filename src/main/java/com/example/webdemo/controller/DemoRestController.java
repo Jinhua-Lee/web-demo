@@ -1,10 +1,7 @@
 package com.example.webdemo.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +85,9 @@ public class DemoRestController {
         }
     }
 
-    @GetMapping(value = "/exit")
+    @PostMapping(value = "/exit")
     public void restart() {
+        // alertManager要求必须Post请求
         System.exit(0);
     }
 }
