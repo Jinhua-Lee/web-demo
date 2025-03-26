@@ -77,7 +77,7 @@ public class DemoRestController {
     @GetMapping(value = "/thread-oom")
     @SuppressWarnings("all")
     public Integer threadOom() {
-        while(true) {
+        while (true) {
             log.info("[thread oom] thread count = {}", threadCount.getAndIncrement());
             new Thread(() -> {
                 try {
@@ -88,4 +88,8 @@ public class DemoRestController {
         }
     }
 
+    @GetMapping(value = "/exit")
+    public void restart() {
+        System.exit(0);
+    }
 }
