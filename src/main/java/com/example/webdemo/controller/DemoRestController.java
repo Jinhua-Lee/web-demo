@@ -86,8 +86,16 @@ public class DemoRestController {
     }
 
     @PostMapping(value = "/exit")
-    public void restart() {
+    @SuppressWarnings("all")
+    public Integer restart() {
         // alertManager要求必须Post请求
-        System.exit(0);
+        new Thread(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException ignored) {
+            }
+            System.exit(0);
+        }).start();
+        return 0;
     }
 }
