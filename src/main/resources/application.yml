@@ -9,11 +9,13 @@ eureka:
       defaultZone: http://${eureka.instance.hostname}:1001/eureka/
     register-with-eureka: false
     registry-fetch-interval-seconds: 5
+    enabled: false
 
 spring:
   main:
     allow-bean-definition-overriding: true
-#  mvc:
+    allow-circular-references: true
+  #  mvc:
 #    # 静态资源路径
 #    static-path-pattern: /**
 #    # 默认值为 classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
@@ -21,24 +23,36 @@ spring:
 #      prefix: classpath:static/templates/
 #      suffix: .html
   redis:
-    host: 172.17.6.117
+    host: my.vm2
     port: 6379
     password: Cafe2babe.!
   rabbitmq:
-    addresses: 172.17.6.117:5672
+    addresses: my.vm2:5672
     username: admin
     password: Cafe2babe.!
   datasource:
     druid:
       config:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://172.17.6.117:5432/PECSTAR_CONFIG_ljhtest
+        url: jdbc:postgresql://my.vm2:5432/PECSTAR_CONFIG_ljhtest
         username: postgres
         password: Cafe2babe.!
       driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://172.17.6.117:5432/PECSTAR_CONFIG_ljhtest
+      url: jdbc:postgresql://my.vm2:5432/PECSTAR_CONFIG_ljhtest
       username: postgres
       password: Cafe2babe.!
+#  cloud:
+#    sentinel:
+#      flow:
+#        rules:
+#          - resource: hangup
+#            # 0-线程数流控，1-QPS流控，3-响应时间流控
+#            grade: 0
+#            # 0-直接流控（按来源）；1-关联流控（与关联资源）；2-链式流控（按入口资源）
+#            strategy: 1
+#            count: 2
+#            # 1-默认行为，2-预热，3-排队等待
+#            controlBehavior: 2
 
 database:
   type: postgresql
@@ -46,3 +60,23 @@ database:
 manual:
   fault:
     enable: false
+
+hystrix:
+  enabled: true
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            # 如果只限制线程数，超时时间可以设置很大。需要加上了接口处理的时间
+            timeoutInMilliseconds: 12000
+  threadpool:
+    default:
+      # 核心线程数
+      coreSize: 2
+      # 等待队列
+      maxQueueSize: 5
+    # 对应接口注解属性threadPoolKey，相同名称共用一个池，要保证唯一性
+    hangup:
+      coreSize: 7
+      maxQueueSize: 2

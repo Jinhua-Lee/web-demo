@@ -1,5 +1,6 @@
 package com.example.webdemo.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +33,40 @@ public class DemoRestController {
         return "hello";
     }
 
+    @HystrixCommand(
+            fallbackMethod = "hangupFallback",
+            threadPoolKey = "hangup",
+            commandKey = "hangup"
+    )
     @GetMapping(value = "/hangup")
     public String hangup(@RequestParam("hangUpSeconds") Integer hangUpSeconds) throws InterruptedException {
         log.info("start to hang up.");
         TimeUnit.SECONDS.sleep(hangUpSeconds);
-        log.info("hang up finished for {} seconds", hangUpSeconds);
+        log.info("hang up finished for {} seconds.", hangUpSeconds);
         return "hangup";
+    }
+
+    @HystrixCommand(
+            fallbackMethod = "hangupFallback2",
+            threadPoolKey = "hangup2",
+            commandKey = "hangup2"
+    )
+    @GetMapping(value = "/hangup2")
+    public String hangup2(@RequestParam("hangUpSeconds") Integer hangUpSeconds) throws InterruptedException {
+        log.info("start to hang up 2.");
+        TimeUnit.SECONDS.sleep(hangUpSeconds);
+        log.info("hang up 2 finished for {} seconds.", hangUpSeconds);
+        return "hangup2";
+    }
+
+    private String hangupFallback(Integer hangUpSeconds) {
+        log.info("hang up fallback method.");
+        return "hangup fallback";
+    }
+
+    private String hangupFallback2(Integer hangUpSeconds) {
+        log.info("hang up fallback method 2.");
+        return "hangup fallback2";
     }
 
     @GetMapping(value = "/memory-out")
