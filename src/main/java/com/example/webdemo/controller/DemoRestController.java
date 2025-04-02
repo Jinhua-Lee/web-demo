@@ -1,13 +1,17 @@
 package com.example.webdemo.controller;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 测试RestController
@@ -25,7 +29,11 @@ public class DemoRestController {
     private final List<byte[]> dataList = new ArrayList<>();
     private Integer totalMegaBytes = 0;
 
-    private final AtomicInteger threadCount = new AtomicInteger();
+    @SuppressWarnings("all")
+    private List<Class<?>> classes = new ArrayList<>();
+
+    @SuppressWarnings("all")
+    private List<ByteBuffer> buffers = new ArrayList<>();
 
     @GetMapping(value = "/hello")
     public String hello() {
@@ -59,18 +67,20 @@ public class DemoRestController {
         return "hangup2";
     }
 
+    @SuppressWarnings(value = "unused")
     private String hangupFallback(Integer hangUpSeconds) {
         log.info("hang up fallback method.");
         return "hangup fallback";
     }
 
+    @SuppressWarnings(value = "unused")
     private String hangupFallback2(Integer hangUpSeconds) {
         log.info("hang up fallback method 2.");
         return "hangup fallback2";
     }
 
     @GetMapping(value = "/memory-out")
-    public Integer memoryOut(@RequestParam(value = "addMegaBytes") Integer addMegaBytes) {
+    public Integer memoryOut(@RequestParam(value = "addMegaBytes", required = false) Integer addMegaBytes) {
         addMegaBytes = addMegaBytes <= 0 ? 100 : addMegaBytes;
         log.info("start to memory out. total memory = {} mb.", totalMegaBytes);
         try {
@@ -87,7 +97,7 @@ public class DemoRestController {
     }
 
     @GetMapping(value = "/memory-alloc")
-    public Integer memoryAlloc(@RequestParam(value = "allocMegaBytes") Integer allocMegaBytes) {
+    public Integer memoryAlloc(@RequestParam(value = "allocMegaBytes", required = false) Integer allocMegaBytes) {
         allocMegaBytes = allocMegaBytes <= 0 ? 100 : allocMegaBytes;
         log.info("start to memory alloc. total memory = {} mb.", allocMegaBytes);
         try {
@@ -100,18 +110,64 @@ public class DemoRestController {
         return allocMegaBytes;
     }
 
-    @GetMapping(value = "/thread-oom")
     @SuppressWarnings("all")
-    public Integer threadOom() {
+    @GetMapping(value = "gc-overhead")
+    public Integer gcOverheadLimit() {
+        List<List<byte[]>> bytes = new ArrayList<>();
         while (true) {
-            log.info("[thread oom] thread count = {}", threadCount.getAndIncrement());
-            new Thread(() -> {
-                try {
-                    TimeUnit.SECONDS.sleep(1_000);
-                } catch (InterruptedException ignored) {
-                }
-            }).start();
+            List<byte[]> curBytes = new ArrayList<>();
+            for (int i = 0; i < 100_000; i++) {
+                curBytes.add(new byte[1 * 32]);
+            }
+            bytes.add(curBytes.subList(0, 1_000));
         }
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    private static class ClassHolder {
+    }
+
+    @GetMapping(value = "/meta-oom")
+    @SuppressWarnings(value = "all")
+    public Integer metaOom() {
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(ClassHolder.class);
+        // 禁用缓存，强制生成新类
+        enhancer.setUseCache(false);
+        enhancer.setCallback((MethodInterceptor) (obj, method, args1, proxy) -> proxy.invokeSuper(obj, args1));
+
+        while (true) {
+            try {
+                // 生成新类并保留引用
+                Class<?> clazz = enhancer.create().getClass();
+                classes.add(clazz);
+            } catch (OutOfMemoryError oom) {
+                log.error("meta oom error.", oom);
+                break;
+            }
+        }
+        return classes.size();
+    }
+
+    @GetMapping(value = "/direct-oom")
+    public Integer directOom() {
+        // 用ByteBuffer模拟直接内存溢出
+        int allocated = 0;
+        while (true) {
+            try {
+                buffers.add(
+                        ByteBuffer.allocateDirect(1024 * 1024)
+                );
+                allocated += 1;
+                log.info("allocated {} mb.", allocated);
+            } catch (OutOfMemoryError oom) {
+                log.error("direct oom error.", oom);
+                break;
+            }
+        }
+        return allocated;
     }
 
     @PostMapping(value = "/exit")
