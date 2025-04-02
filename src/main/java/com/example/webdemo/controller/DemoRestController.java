@@ -119,7 +119,7 @@ public class DemoRestController {
             for (int i = 0; i < 100_000; i++) {
                 curBytes.add(new byte[1 * 32]);
             }
-            bytes.add(curBytes.subList(0, 1_000));
+            bytes.add(curBytes.subList(0, 10_000));
         }
     }
 
