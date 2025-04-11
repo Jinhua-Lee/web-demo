@@ -11,6 +11,7 @@ ADD ./target/${ARTIFACT_ID}-${VERSION}.war /${ARTIFACT_ID}.jar
 # 运行根目录下该jar文件
 RUN sh -c 'touch /${ARTIFACT_ID}.jar'
 
+ENV TZ Asia/Shanghai
 ENV JAVA_OPTS=""
 ENV JAR_FILE_NAME ${ARTIFACT_ID}
 

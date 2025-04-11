@@ -16,7 +16,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class OomMetricsCountAspect {
 
-    @Pointcut("execution(public * com.example.webdemo.controller.*.*(..))")
+    @Pointcut(
+            "execution(@org.springframework.scheduling.annotation.Scheduled * *(..)) || "
+            + "execution(@org.springframework.web.bind.annotation.GetMapping * *(..)) || "
+            + "execution(@org.springframework.web.bind.annotation.PostMapping * *(..)) || "
+            + "execution(@org.springframework.web.bind.annotation.PutMapping * *(..)) || "
+            + "execution(@org.springframework.web.bind.annotation.DeleteMapping * *(..))"
+    )
     public void pointcut() {
     }
 
