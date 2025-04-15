@@ -1,5 +1,7 @@
 FROM fabric8/java-alpine-openjdk11-jdk
 
+ENV PATH="/usr/lib/jvm/java-11-openjdk/bin:${PATH}"
+
 VOLUME /tmp
 
 # 复制war包到根目录
@@ -11,7 +13,7 @@ ADD ./target/${ARTIFACT_ID}-${VERSION}.war /${ARTIFACT_ID}.jar
 # 运行根目录下该jar文件
 RUN sh -c 'touch /${ARTIFACT_ID}.jar'
 
-RUN apk add --no-cache tzdata
+RUN apk add tzdata
 ENV TZ Asia/Shanghai
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone
