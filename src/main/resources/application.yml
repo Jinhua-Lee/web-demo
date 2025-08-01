@@ -3,7 +3,7 @@ server:
 
 eureka:
   instance:
-    hostname: 172.17.6.121
+    hostname: 172.17.6.117
   client:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:1001/eureka/
@@ -23,22 +23,38 @@ spring:
 #      prefix: classpath:static/templates/
 #      suffix: .html
   redis:
-    host: my.vm2
+    host: my.vm
     port: 6379
     password: Cafe2babe.!
   rabbitmq:
-    addresses: my.vm2:5672
-    username: admin
-    password: Cafe2babe.!
+    addresses: my.vm:5672
+    host: my.vm
+    port: 5672
+#    username: admin
+#    password: Cafe2babe.!
+    ssl:
+      enabled: true        # 启用 SSL
+      #      server-hostname: 172.17.6.117
+      algorithm: TLSv1.2
+      # 客户端证书链
+      key-store: classpath:certs/client_keystore.p12
+      # 密钥库密码
+      key-store-password: szpt_CeT108!
+      key-store-type: PKCS12
+      # 信任的 CA 证书
+      trust-store: classpath:certs/truststore.p12
+      trust-store-password: szpt_CeT108!
+      trust-store-type: PKCS12
+      verify-hostname: false
   datasource:
     druid:
       config:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://my.vm2:5432/PECSTAR_CONFIG_ljhtest
+        url: jdbc:postgresql://my.vm:5432/PECSTAR_CONFIG_ljhtest
         username: postgres
         password: Cafe2babe.!
       driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://my.vm2:5432/PECSTAR_CONFIG_ljhtest
+      url: jdbc:postgresql://my.vm:5432/PECSTAR_CONFIG_ljhtest
       username: postgres
       password: Cafe2babe.!
 #  cloud:
@@ -62,7 +78,7 @@ manual:
     enable: false
 
 hystrix:
-  enabled: true
+  enabled: false
   command:
     default:
       execution:
