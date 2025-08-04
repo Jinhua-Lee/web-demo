@@ -3,7 +3,7 @@ server:
 
 eureka:
   instance:
-    hostname: 172.17.6.121
+    hostname: my.vm
   client:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:1001/eureka/
@@ -23,22 +23,24 @@ spring:
 #      prefix: classpath:static/templates/
 #      suffix: .html
   redis:
-    host: my.vm2
+    host: my.vm
     port: 6379
     password: Cafe2babe.!
   rabbitmq:
-    addresses: my.vm2:5672
+#    addresses: my.vm:5672
+    addresses: 10.12.137.125:5673
     username: admin
-    password: Cafe2babe.!
+#    password: Cafe2babe.!
+    password: Q2wdgT8k@
   datasource:
     druid:
       config:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://my.vm2:5432/PECSTAR_CONFIG_ljhtest
+        url: jdbc:postgresql://my.vm:5432/PECSTAR_CONFIG_ljhtest
         username: postgres
         password: Cafe2babe.!
       driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://my.vm2:5432/PECSTAR_CONFIG_ljhtest
+      url: jdbc:postgresql://my.vm:5432/PECSTAR_CONFIG_ljhtest
       username: postgres
       password: Cafe2babe.!
 #  cloud:
@@ -80,3 +82,13 @@ hystrix:
     hangup:
       coreSize: 7
       maxQueueSize: 2
+
+feign:
+  custom-routing:
+    services:
+      pec-service:
+        - http://my.vm:4118
+      config-server:
+        - http://my.vm:4119
+      iot-node-service:
+        - http://my.vm:4120
