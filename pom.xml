@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>web-demo</artifactId>
-    <version>0.1.1-rabbitssl</version>
+    <version>0.1.1-rabbit-ssl</version>
     <packaging>war</packaging>
     <name>web-demo</name>
     <description>web-demo</description>
