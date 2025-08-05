@@ -48,8 +48,10 @@ public class PecController {
             @RequestBody MeterDataLogQueryParam param,
             @RequestParam (value = "fill", required = false) Boolean fill,
             @RequestParam (value = "p35", required = false) Boolean p35) {
-        ApiResult<List<DatalogGroupData>> pecServiceResult = dataServiceV2RestApi.queryMultiMeterDataLogGroupDataByStartTimeAndInterval(param, fill, p35);
-        ApiResult<List<DatalogGroupData>> facadeResult = fusionFacadeFeignClient.queryMultiMeterDataLogGroupDataByStartTimeAndInterval(param, fill, p35);
+        ApiResult<List<DatalogGroupData>> pecServiceResult = dataServiceV2RestApi
+                .queryMultiMeterDataLogGroupDataByStartTimeAndInterval(param, fill, p35);
+        ApiResult<List<DatalogGroupData>> facadeResult = fusionFacadeFeignClient
+                .queryMultiMeterDataLogGroupDataByStartTimeAndInterval(param, fill, p35);
         if (pecServiceResult.isSuccess() && facadeResult.isSuccess()) {
             // 比较Double值结果是否一致
             // 1. 先找到deviceId, logicalId, dataTypeId, dataId相等的第一条
