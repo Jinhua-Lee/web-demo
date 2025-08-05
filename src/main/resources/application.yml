@@ -87,8 +87,9 @@ feign:
   custom-routing:
     services:
       pec-service:
-        - http://my.vm:4118
+        - http://172.17.6.117:4118
       config-server:
-        - http://my.vm:4119
+        - http://172.17.6.117:4119
       iot-node-service:
-        - http://my.vm:4120
+        - http://172.17.6.117:4120
+      fusion-facade: http://172.17.6.117:5200
