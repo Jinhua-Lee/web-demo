@@ -19,6 +19,12 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>com.cet.futureblue</groupId>
+            <artifactId>fusion-senhigh-facade-spring-boot-starter</artifactId>
+            <version>0.0.34</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>

@@ -3,7 +3,7 @@ server:
 
 eureka:
   instance:
-    hostname: 172.17.6.117
+    hostname: my.vm
   client:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:1001/eureka/
@@ -96,3 +96,14 @@ hystrix:
     hangup:
       coreSize: 7
       maxQueueSize: 2
+
+feign:
+  custom-routing:
+    services:
+      pec-service:
+        - http://172.17.6.117:4118
+      config-server:
+        - http://172.17.6.117:4119
+      iot-node-service:
+        - http://172.17.6.117:4120
+      fusion-facade: http://172.17.6.117:5200

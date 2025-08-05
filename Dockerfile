@@ -1,5 +1,5 @@
 #FROM fabric8/java-alpine-openjdk11-jdk
-FROM matterhorn/openjdk-with-fontconfig-sky:v1.0.2
+FROM 10.12.135.233/matterhorn/openjdk-with-fontconfig-sky:v1.0.2
 
 ENV PATH="/usr/lib/jvm/java-11-openjdk/bin:${PATH}"
 
