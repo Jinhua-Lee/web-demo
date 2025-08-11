@@ -27,22 +27,22 @@ spring:
     port: 6379
     password: Cafe2babe.!
   rabbitmq:
-    addresses: my.vm:5672
+    addresses: my.vm:5671
     host: my.vm
-    port: 5672
-#    username: admin
-#    password: Cafe2babe.!
+    port: 5671
+    username: admin
+    password: Cafe2babe.!
     ssl:
       enabled: true        # 启用 SSL
       #      server-hostname: 172.17.6.117
       algorithm: TLSv1.2
       # 客户端证书链
-      key-store: classpath:certs/client_keystore.p12
+      key-store: D:\IDEA_Projects\web-demo\src\main\resources\certs\client_keystore.p12
       # 密钥库密码
       key-store-password: szpt_CeT108!
       key-store-type: PKCS12
       # 信任的 CA 证书
-      trust-store: classpath:certs/truststore.p12
+      trust-store: D:\IDEA_Projects\web-demo\src\main\resources\certs\truststore.p12
       trust-store-password: szpt_CeT108!
       trust-store-type: PKCS12
       verify-hostname: false

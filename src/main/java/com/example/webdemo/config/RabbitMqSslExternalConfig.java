@@ -3,11 +3,9 @@ package com.example.webdemo.config;
 import com.rabbitmq.client.DefaultSaslConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -15,16 +13,16 @@ import org.springframework.context.annotation.Primary;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.Collections;
 
 @Slf4j
 @Configuration
+@ConditionalOnProperty(name = "spring.rabbitmq.ssl.enabled", havingValue = "true")
 public class RabbitMqSslExternalConfig {
-
-    private static final String TRUST_STORE_PATH = "/certs/truststore.p12";
-    private static final String KEY_STORE_PATH = "/certs/client_keystore.p12";
 
     private RabbitProperties rabbitProperties;
 
@@ -71,21 +69,33 @@ public class RabbitMqSslExternalConfig {
      * 构建双向 TLS 的 SSLContext
      */
     private SSLContext buildSslContext() throws Exception {
+        String trustStorePath = rabbitProperties.getSsl().getTrustStore();
+        String keyStorePath = rabbitProperties.getSsl().getKeyStore();
         // 加载信任库，验证服务端证书
-        KeyStore trustStore = KeyStore.getInstance("PKCS12");
-        try (InputStream trustStream = getClass().getResourceAsStream(TRUST_STORE_PATH)) {
-            if (trustStream == null) {
-                throw new IllegalStateException("TrustStore file not found: " + TRUST_STORE_PATH);
+        KeyStore trustStore = KeyStore.getInstance(rabbitProperties.getSsl().getTrustStoreType());
+        try {
+            File trustFile = new File(trustStorePath);
+            if (!trustFile.exists() || !trustFile.canRead()) {
+                throw new IllegalStateException("Failed to load TrustStore: " + trustStorePath);
             }
-            trustStore.load(trustStream, rabbitProperties.getSsl().getTrustStorePassword().toCharArray());
+            trustStore.load(new FileInputStream(trustFile),
+                    rabbitProperties.getSsl().getTrustStorePassword().toCharArray()
+            );
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to load TrustStore: " + trustStorePath, e);
         }
         log.info("Loaded TrustStore with aliases: {}", Collections.list(trustStore.aliases()));
 
         // 加载密钥库，提供客户端证书和私钥
-        KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        try (InputStream keyStream = getClass().getResourceAsStream(KEY_STORE_PATH)) {
-            if (keyStream == null) throw new IllegalStateException("KeyStore file not found: " + KEY_STORE_PATH);
-            keyStore.load(keyStream, rabbitProperties.getSsl().getKeyStorePassword().toCharArray());
+        KeyStore keyStore = KeyStore.getInstance(rabbitProperties.getSsl().getKeyStoreType());
+        try {
+            File keyFile = new File(keyStorePath);
+            if (!keyFile.exists() || !keyFile.canRead()) {
+                throw new IllegalStateException("Failed to load KeyStore: " + keyStorePath);
+            }
+            keyStore.load(new FileInputStream(keyFile), rabbitProperties.getSsl().getKeyStorePassword().toCharArray());
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to load KeyStore: " + keyStorePath, e);
         }
         log.info("Loaded KeyStore with aliases: {}", Collections.list(keyStore.aliases()));
 
@@ -98,21 +108,10 @@ public class RabbitMqSslExternalConfig {
         kmf.init(keyStore, rabbitProperties.getSsl().getKeyStorePassword().toCharArray());
 
         // 初始化 SSLContext，指定 TLS 版本
-        SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+        SSLContext sslContext = SSLContext.getInstance(rabbitProperties.getSsl().getAlgorithm());
+        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
 
         return sslContext;
-    }
-
-
-    @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        return new RabbitTemplate(connectionFactory);
-    }
-
-    @Bean
-    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory){
-        return new RabbitAdmin(connectionFactory);
     }
 
     @Autowired
