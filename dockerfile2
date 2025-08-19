@@ -1,0 +1,9 @@
+FROM 10.12.135.243/base/rabbitmq:v3.8.34-management
+
+# 若目录/plugins不存在则需要创建
+RUN mkdir -p /plugins
+
+COPY rabbitmq_auth_backend_ip_range-2.0.0.ez /plugins/
+
+# 启用插件并启动 RabbitMQ
+CMD ["bash", "-c", "rabbitmq-plugins enable rabbitmq_auth_backend_ip_range && rabbitmq-server"]

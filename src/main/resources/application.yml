@@ -27,13 +27,13 @@ spring:
     port: 6379
     password: Cafe2babe.!
   rabbitmq:
-    addresses: my.vm:5671
+    addresses: my.vm:5672
     host: my.vm
-    port: 5671
+    port: 5672
     username: admin
     password: Cafe2babe.!
     ssl:
-      enabled: true        # 启用 SSL
+      enabled: false        # 启用 SSL
       #      server-hostname: 172.17.6.117
       algorithm: TLSv1.2
       # 客户端证书链

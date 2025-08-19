@@ -1,0 +1,8 @@
+FROM rabbitmq:3.9.29-management
+
+RUN mkdir -p /plugins
+
+COPY "rabbitmq_auth_backend_ip_range-2.0.0+rmq-39.ez" /plugins/
+
+# 启用插件并启动 RabbitMQ
+CMD ["bash", "-c", "rabbitmq-plugins enable rabbitmq_auth_backend_ip_range && rabbitmq-server"]
